@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - PK结果</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .pk-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .pk-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px;
+            border-radius: 12px;
+            background-color: var(--bg-secondary);
+        }
+        
+        .pk-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            object-fit: cover;
+            margin-bottom: 8px;
+        }
+        
+        .pk-vs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 -20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            font-weight: 700;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+        
+        .comparison-row {
+            display: flex;
+            margin-bottom: 16px;
+        }
+        
+        .comparison-label {
+            flex: 1;
+            padding: 12px 16px;
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            margin-right: 12px;
+        }
+        
+        .comparison-value {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comparison-value-left {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 12px 0 0 12px;
+        }
+        
+        .comparison-value-right {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .comparison-better {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
+        
+        .comparison-worse {
+            background-color: var(--bg-tertiary);
+        }
+        
+        .conclusion-card {
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--text-primary);
+        }
+        
+        .template-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .template-item {
+            flex: 1;
+            aspect-ratio: 1/1.5;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--separator-color);
+        }
+        
+        .template-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .template-item.selected {
+            border: 2px solid var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <button class="navbar-button" onclick="goBack()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="navbar-title">对比结果</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container">
+        <!-- PK头部 -->
+        <div class="pk-header">
+            <!-- 左侧食品 -->
+            <div class="pk-item">
+                <img src="https://placehold.co/120x120/333/FFF?text=Oatmeal" alt="纯燕麦片" class="pk-image">
+                <div class="text-medium" style="font-weight: 600; text-align: center;">纯燕麦片</div>
+                <div class="text-small" style="text-align: center;">健康谷物</div>
+                <div style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-top: 4px;">B</div>
+            </div>
+            
+            <!-- VS -->
+            <div class="pk-vs">VS</div>
+            
+            <!-- 右侧食品 -->
+            <div class="pk-item">
+                <img src="https://placehold.co/120x120/333/FFF?text=Yogurt" alt="原味酸奶" class="pk-image">
+                <div class="text-medium" style="font-weight: 600; text-align: center;">原味酸奶</div>
+                <div class="text-small" style="text-align: center;">纯然牧场</div>
+                <div style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-top: 4px;">A</div>
+            </div>
+        </div>
+        
+        <!-- 对比维度和模式 -->
+        <div class="flex justify-between items-center" style="margin-bottom: 16px;">
+            <h3>营养对比</h3>
+            <div>
+                <select style="border: 1px solid var(--separator-color); border-radius: 8px; padding: 6px 12px; background-color: var(--bg-secondary); color: var(--text-primary); font-size: 14px;">
+                    <option>标准对比</option>
+                    <option>减脂对比</option>
+                    <option>增肌对比</option>
+                    <option>低糖对比</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- 热量对比 -->
+        <div class="comparison-row">
+            <div class="comparison-label">
+                <div class="text-medium">热量</div>
+                <div class="text-small">(每100g)</div>
+            </div>
+            <div class="comparison-value">
+                <div class="comparison-value-left comparison-worse">367 千卡</div>
+                <div class="comparison-value-right comparison-better">120 千卡</div>
+            </div>
+        </div>
+        
+        <!-- 蛋白质对比 -->
+        <div class="comparison-row">
+            <div class="comparison-label">
+                <div class="text-medium">蛋白质</div>
+                <div class="text-small">(每100g)</div>
+            </div>
+            <div class="comparison-value">
+                <div class="comparison-value-left comparison-better">13.7 g</div>
+                <div class="comparison-value-right comparison-worse">8.0 g</div>
+            </div>
+        </div>
+        
+        <!-- 脂肪对比 -->
+        <div class="comparison-row">
+            <div class="comparison-label">
+                <div class="text-medium">脂肪</div>
+                <div class="text-small">(每100g)</div>
+            </div>
+            <div class="comparison-value">
+                <div class="comparison-value-left comparison-worse">7.0 g</div>
+                <div class="comparison-value-right comparison-better">4.0 g</div>
+            </div>
+        </div>
+        
+        <!-- 碳水化合物对比 -->
+        <div class="comparison-row">
+            <div class="comparison-label">
+                <div class="text-medium">碳水化合物</div>
+                <div class="text-small">(每100g)</div>
+            </div>
+            <div class="comparison-value">
+                <div class="comparison-value-left comparison-worse">59.0 g</div>
+                <div class="comparison-value-right comparison-better">12.0 g</div>
+            </div>
+        </div>
+        
+        <!-- 糖对比 -->
+        <div class="comparison-row">
+            <div class="comparison-label">
+                <div class="text-medium">糖</div>
+                <div class="text-small">(每100g)</div>
+            </div>
+            <div class="comparison-value">
+                <div class="comparison-value-left comparison-better">1.0 g</div>
+                <div class="comparison-value-right comparison-worse">10.0 g</div>
+            </div>
+        </div>
+        
+        <!-- 钠对比 -->
+        <div class="comparison-row">
+            <div class="comparison-label">
+                <div class="text-medium">钠</div>
+                <div class="text-small">(每100g)</div>
+            </div>
+            <div class="comparison-value">
+                <div class="comparison-value-left comparison-better">2 mg</div>
+                <div class="comparison-value-right comparison-worse">65 mg</div>
+            </div>
+        </div>
+        
+        <!-- 膳食纤维对比 -->
+        <div class="comparison-row">
+            <div class="comparison-label">
+                <div class="text-medium">膳食纤维</div>
+                <div class="text-small">(每100g)</div>
+            </div>
+            <div class="comparison-value">
+                <div class="comparison-value-left comparison-better">10.6 g</div>
+                <div class="comparison-value-right comparison-worse">0 g</div>
+            </div>
+        </div>
+        
+        <!-- 结论 -->
+        <div class="conclusion-card">
+            <h3 style="margin-bottom: 8px;">对比结论</h3>
+            <p class="text-medium">
+                相比较而言，<strong>原味酸奶</strong>在热量、脂肪和碳水化合物方面更低，更适合控制体重。而<strong>纯燕麦片</strong>在蛋白质、膳食纤维含量和低糖方面具有优势，更适合增加饱腹感和稳定血糖。
+            </p>
+            <p class="text-medium" style="margin-top: 8px;">
+                综合两种食品的营养特点，建议搭配食用可以获得更均衡的营养。
+            </p>
+        </div>
+        
+        <!-- 分享模板 -->
+        <h3>分享对比结果</h3>
+        <div class="template-row">
+            <div class="template-item selected">
+                <img src="https://placehold.co/200x300/333/FFF?text=VS+Template+1" alt="对比模板1">
+            </div>
+            <div class="template-item">
+                <img src="https://placehold.co/200x300/333/FFF?text=VS+Template+2" alt="对比模板2">
+            </div>
+        </div>
+        
+        <!-- 分享按钮 -->
+        <button class="button" style="margin-bottom: 24px;">生成分享图片</button>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        // 选择模板
+        const templateItems = document.querySelectorAll('.template-item');
+        templateItems.forEach(item => {
+            item.addEventListener('click', function() {
+                templateItems.forEach(t => t.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html> 

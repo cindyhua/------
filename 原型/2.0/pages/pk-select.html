@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - PK选择</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .pk-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .pk-item {
+            flex: 1;
+            background-color: var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 180px;
+            position: relative;
+        }
+        
+        .pk-item-selected {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--text-primary);
+        }
+        
+        .pk-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            background-color: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        
+        .pk-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            object-fit: cover;
+            margin-bottom: 12px;
+        }
+        
+        .pk-vs {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            z-index: 10;
+        }
+        
+        .food-item {
+            display: flex;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            background-color: var(--bg-secondary);
+            cursor: pointer;
+        }
+        
+        .food-item:active {
+            background-color: var(--bg-tertiary);
+        }
+        
+        .food-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 12px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--separator-color);
+            margin-bottom: 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 8px;
+        }
+        
+        .filter-tab {
+            padding: 8px 16px;
+            margin-right: 8px;
+            border-radius: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .filter-tab.active {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <button class="navbar-button" onclick="goBack()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="navbar-title">选择对比食品</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container">
+        <!-- PK选择框 -->
+        <div class="pk-container">
+            <!-- VS标志 -->
+            <div class="pk-vs">VS</div>
+            
+            <!-- 左侧食品 -->
+            <div class="pk-item pk-item-selected" id="leftItem">
+                <img src="https://placehold.co/160x160/333/FFF?text=Oatmeal" alt="纯燕麦片" class="pk-image">
+                <div class="text-medium" style="font-weight: 600;">纯燕麦片</div>
+                <div class="text-small">健康谷物</div>
+            </div>
+            
+            <!-- 右侧食品 -->
+            <div class="pk-item" id="rightItem">
+                <div class="pk-placeholder">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="text-medium">选择食品</div>
+                <div class="text-small">点击下方列表或扫描</div>
+            </div>
+        </div>
+        
+        <!-- 扫描按钮 -->
+        <a href="scan.html" class="button button-secondary" style="margin-bottom: 24px;">
+            <div class="flex justify-between items-center">
+                <span>扫描新食品</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M4 12H20" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 4L12 20" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </div>
+        </a>
+        
+        <!-- 过滤选项 -->
+        <div class="filter-tabs">
+            <div class="filter-tab active">全部</div>
+            <div class="filter-tab">早餐食品</div>
+            <div class="filter-tab">饮料</div>
+            <div class="filter-tab">零食</div>
+            <div class="filter-tab">乳制品</div>
+            <div class="filter-tab">主食</div>
+        </div>
+        
+        <!-- 食品列表 -->
+        <h3>历史记录</h3>
+        
+        <div class="food-item" onclick="selectFood(2)">
+            <img src="https://placehold.co/120x120/333/FFF?text=Yogurt" alt="原味酸奶" class="food-image">
+            <div>
+                <div class="text-large">原味酸奶</div>
+                <div class="text-small">纯然牧场 · 2023-09-14</div>
+                <div class="flex items-center gap-8" style="margin-top: 4px;">
+                    <div style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px;">A</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="food-item" onclick="selectFood(3)">
+            <img src="https://placehold.co/120x120/333/FFF?text=Nuts" alt="混合坚果" class="food-image">
+            <div>
+                <div class="text-large">混合坚果</div>
+                <div class="text-small">每日坚果 · 2023-09-10</div>
+                <div class="flex items-center gap-8" style="margin-top: 4px;">
+                    <div style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px;">B</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="food-item" onclick="selectFood(4)">
+            <img src="https://placehold.co/120x120/333/FFF?text=Cereal" alt="谷物早餐麦片" class="food-image">
+            <div>
+                <div class="text-large">谷物早餐麦片</div>
+                <div class="text-small">家乐氏 · 2023-09-05</div>
+                <div class="flex items-center gap-8" style="margin-top: 4px;">
+                    <div style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px;">C</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 对比按钮 -->
+        <button class="button" id="compareButton" style="margin-top: 24px; margin-bottom: 24px;" disabled>开始对比</button>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        // 选中状态
+        let leftSelected = true;
+        let rightSelected = false;
+        
+        // 选择食品
+        function selectFood(id) {
+            // 模拟数据
+            const foods = {
+                1: {
+                    name: '纯燕麦片',
+                    brand: '健康谷物',
+                    image: 'https://placehold.co/160x160/333/FFF?text=Oatmeal',
+                    score: 'B'
+                },
+                2: {
+                    name: '原味酸奶',
+                    brand: '纯然牧场',
+                    image: 'https://placehold.co/160x160/333/FFF?text=Yogurt',
+                    score: 'A'
+                },
+                3: {
+                    name: '混合坚果',
+                    brand: '每日坚果',
+                    image: 'https://placehold.co/160x160/333/FFF?text=Nuts',
+                    score: 'B'
+                },
+                4: {
+                    name: '谷物早餐麦片',
+                    brand: '家乐氏',
+                    image: 'https://placehold.co/160x160/333/FFF?text=Cereal',
+                    score: 'C'
+                }
+            };
+            
+            const food = foods[id];
+            
+            // 更新视图
+            const targetItem = document.getElementById(leftSelected ? 'rightItem' : 'leftItem');
+            targetItem.innerHTML = `
+                <img src="${food.image}" alt="${food.name}" class="pk-image">
+                <div class="text-medium" style="font-weight: 600;">${food.name}</div>
+                <div class="text-small">${food.brand}</div>
+            `;
+            targetItem.classList.add('pk-item-selected');
+            
+            // 更新选中状态
+            if (leftSelected) {
+                rightSelected = true;
+            } else {
+                leftSelected = true;
+            }
+            
+            // 更新对比按钮状态
+            document.getElementById('compareButton').disabled = !(leftSelected && rightSelected);
+            
+            // 如果两个都已选中，绑定对比按钮事件
+            if (leftSelected && rightSelected) {
+                document.getElementById('compareButton').onclick = function() {
+                    window.location.href = 'pk-result.html';
+                };
+            }
+        }
+        
+        // 切换选择的一侧
+        document.getElementById('leftItem').addEventListener('click', function() {
+            leftSelected = true;
+            document.getElementById('leftItem').classList.add('pk-item-selected');
+            document.getElementById('rightItem').classList.remove('pk-item-selected');
+        });
+        
+        document.getElementById('rightItem').addEventListener('click', function() {
+            leftSelected = false;
+            document.getElementById('rightItem').classList.add('pk-item-selected');
+            document.getElementById('leftItem').classList.remove('pk-item-selected');
+        });
+        
+        // 过滤选项点击
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html> 

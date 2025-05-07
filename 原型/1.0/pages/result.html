@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 分析结果</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/sf-symbols.css">
+    <link rel="stylesheet" href="../css/monochrome-theme.css">
+    <script src="../js/app.js"></script>
+    <style>
+        .result-header {
+            margin-bottom: 20px;
+        }
+        
+        .food-image {
+            width: 100%;
+            height: 200px;
+            background-color: #F5F5F5;
+            background-image: url('../images/food1.jpg');
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .food-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .food-detail {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 4px;
+        }
+        
+        .result-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .nutrition-table {
+            border: 1px solid #EEEEEE;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .nutrition-header {
+            background-color: #F5F5F5;
+            padding: 12px 16px;
+            font-weight: 600;
+            display: flex;
+        }
+        
+        .nutrition-name {
+            flex: 1;
+        }
+        
+        .nutrition-value, .nutrition-rate {
+            width: 80px;
+            text-align: right;
+        }
+        
+        .nutrition-item {
+            display: flex;
+            padding: 12px 16px;
+            border-top: 1px solid #EEEEEE;
+            align-items: center;
+        }
+        
+        .nutrition-item:nth-child(even) {
+            background-color: #FAFAFA;
+        }
+        
+        .item-level {
+            width: 6px;
+            height: 24px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+        
+        .level-low {
+            background-color: #DFDFDF;
+        }
+        
+        .level-medium {
+            background-color: #777777;
+        }
+        
+        .level-high {
+            background-color: #000000;
+        }
+        
+        .nutrition-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .score-label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .score-value {
+            font-size: 28px;
+            font-weight: 700;
+            background-color: #F5F5F5;
+            color: #000000;
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .score-excellent {
+            background-color: #F5F5F5;
+            color: #000000;
+        }
+        
+        .score-good {
+            background-color: #EEEEEE;
+            color: #333333;
+        }
+        
+        .score-fair {
+            background-color: #CCCCCC;
+            color: #333333;
+        }
+        
+        .score-poor {
+            background-color: #999999;
+            color: #FFFFFF;
+        }
+        
+        .score-range {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .range-segment {
+            flex: 1;
+            height: 6px;
+            margin: 0 2px;
+            border-radius: 2px;
+        }
+        
+        .segment-poor {
+            background-color: #EEEEEE;
+        }
+        
+        .segment-fair {
+            background-color: #DDDDDD;
+        }
+        
+        .segment-good {
+            background-color: #AAAAAA;
+        }
+        
+        .segment-excellent {
+            background-color: #777777;
+        }
+        
+        .segment-active {
+            background-color: #000000;
+        }
+        
+        .comparison-chart {
+            display: flex;
+            height: 200px;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 12px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #EEEEEE;
+        }
+        
+        .chart-column {
+            width: 30px;
+            background-color: #EEEEEE;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .current-value {
+            background-color: #000000;
+            border-radius: 4px 4px 0 0;
+            width: 100%;
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -30px;
+            text-align: center;
+            font-size: 12px;
+            width: 40px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .column-highlight {
+            border: 1px solid #000000;
+        }
+        
+        .suggested-value {
+            width: 28px;
+            height: 2px;
+            background-color: #777777;
+            position: absolute;
+            z-index: 1;
+        }
+        
+        .comparison-legend {
+            display: flex;
+            justify-content: center;
+            margin: 8px 0 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 12px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            border-radius: 2px;
+        }
+        
+        .legend-current {
+            background-color: #000000;
+        }
+        
+        .legend-suggested {
+            background-color: #777777;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+        
+        .action-button {
+            flex: 1;
+            margin: 0 8px;
+            height: 44px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .button-primary {
+            background-color: #000000;
+            color: white;
+        }
+        
+        .button-secondary {
+            background-color: #F5F5F5;
+            color: #000000;
+            border: 1px solid #EEEEEE;
+        }
+        
+        .button-icon {
+            margin-right: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="nav-bar-content">
+            <button class="nav-button" onclick="navigateTo('home.html')">
+                <span class="sf-symbol xmark"></span>
+            </button>
+            <div class="nav-title">分析结果</div>
+            <button class="nav-button" onclick="vibrate(10); showActionSheet('选择操作', ['保存到收藏夹', '分享', '导出为PDF', '删除记录'])">
+                <span class="sf-symbol ellipsis"></span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 页面内容 -->
+    <div class="page-content">
+        <!-- 食品信息 -->
+        <div class="result-header">
+            <div class="food-image"></div>
+            
+            <h1 class="food-title">蒙牛纯牛奶 250ml</h1>
+            <div class="food-detail">
+                <span class="sf-symbol calendar"></span>
+                扫描时间: 2023-06-10 10:30
+            </div>
+        </div>
+        
+        <!-- 营养成分表 -->
+        <div class="result-section">
+            <h2 class="section-title">营养成分详情</h2>
+            
+            <div class="nutrition-table">
+                <div class="nutrition-header">
+                    <div class="nutrition-name">营养素</div>
+                    <div class="nutrition-value">含量</div>
+                    <div class="nutrition-rate">NRV%</div>
+                </div>
+                
+                <div class="nutrition-item">
+                    <div class="item-level level-medium"></div>
+                    <div class="nutrition-name">能量</div>
+                    <div class="nutrition-value">120 kcal</div>
+                    <div class="nutrition-rate">6%</div>
+                </div>
+                
+                <div class="nutrition-item">
+                    <div class="item-level level-medium"></div>
+                    <div class="nutrition-name">蛋白质</div>
+                    <div class="nutrition-value">3.2 g</div>
+                    <div class="nutrition-rate">5%</div>
+                </div>
+                
+                <div class="nutrition-item">
+                    <div class="item-level level-high"></div>
+                    <div class="nutrition-name">脂肪</div>
+                    <div class="nutrition-value">4.0 g</div>
+                    <div class="nutrition-rate">7%</div>
+                </div>
+                
+                <div class="nutrition-item">
+                    <div class="item-level level-low"></div>
+                    <div class="nutrition-name">碳水化合物</div>
+                    <div class="nutrition-value">4.8 g</div>
+                    <div class="nutrition-rate">2%</div>
+                </div>
+                
+                <div class="nutrition-item">
+                    <div class="item-level level-low"></div>
+                    <div class="nutrition-name">钠</div>
+                    <div class="nutrition-value">39 mg</div>
+                    <div class="nutrition-rate">2%</div>
+                </div>
+                
+                <div class="nutrition-item">
+                    <div class="item-level level-high"></div>
+                    <div class="nutrition-name">钙</div>
+                    <div class="nutrition-value">120 mg</div>
+                    <div class="nutrition-rate">15%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 营养评分 -->
+        <div class="result-section">
+            <h2 class="section-title">营养健康评分</h2>
+            
+            <div class="nutrition-score">
+                <div class="score-label">营养评分</div>
+                <div class="score-value score-good">B</div>
+            </div>
+            
+            <div class="score-range">
+                <div class="range-segment segment-poor"></div>
+                <div class="range-segment segment-fair"></div>
+                <div class="range-segment segment-good segment-active"></div>
+                <div class="range-segment segment-excellent"></div>
+            </div>
+            
+            <div class="score-detail">
+                这是一款营养均衡的饮品，钙含量高，适合日常补充营养，但脂肪含量较高，建议适量食用。根据《中国居民膳食指南（2022）》推荐每天摄入300-500ml奶制品。
+            </div>
+        </div>
+        
+        <!-- 营养素对比 -->
+        <div class="result-section">
+            <h2 class="section-title">与推荐摄入量对比</h2>
+            
+            <div class="comparison-chart">
+                <div class="chart-column">
+                    <div class="suggested-value" style="bottom: 90px;"></div>
+                    <div class="current-value" style="height: 50px;"></div>
+                    <div class="chart-label">蛋白质</div>
+                </div>
+                
+                <div class="chart-column">
+                    <div class="suggested-value" style="bottom: 60px;"></div>
+                    <div class="current-value" style="height: 100px;"></div>
+                    <div class="chart-label">脂肪</div>
+                </div>
+                
+                <div class="chart-column">
+                    <div class="suggested-value" style="bottom: 120px;"></div>
+                    <div class="current-value" style="height: 20px;"></div>
+                    <div class="chart-label">碳水</div>
+                </div>
+                
+                <div class="chart-column">
+                    <div class="suggested-value" style="bottom: 50px;"></div>
+                    <div class="current-value" style="height: 15px;"></div>
+                    <div class="chart-label">钠</div>
+                </div>
+                
+                <div class="chart-column column-highlight">
+                    <div class="suggested-value" style="bottom: 80px;"></div>
+                    <div class="current-value" style="height: 150px;"></div>
+                    <div class="chart-label">钙</div>
+                </div>
+            </div>
+            
+            <div class="comparison-legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-current"></div>
+                    <div>当前食品</div>
+                </div>
+                
+                <div class="legend-item">
+                    <div class="legend-color legend-suggested"></div>
+                    <div>推荐摄入</div>
+                </div>
+            </div>
+            
+            <div class="comparison-detail">
+                与推荐摄入量相比，该产品钙含量较高，是补充钙质的良好来源。单次饮用提供一天所需钙量的15%。
+            </div>
+        </div>
+        
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+            <button class="action-button button-secondary" onclick="vibrate(10); showToast('已保存到收藏夹')">
+                <span class="button-icon sf-symbol bookmark"></span>
+                <span>收藏</span>
+            </button>
+            
+            <button class="action-button button-primary" onclick="vibrate(10); showShareSheet('蒙牛纯牛奶营养分析')">
+                <span class="button-icon sf-symbol share"></span>
+                <span>分享</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-bar-content">
+            <div class="tab-item" onclick="navigateTo('home.html')">
+                <div class="sf-symbol home"></div>
+                <div class="tab-label">首页</div>
+            </div>
+            <div class="tab-item scan-tab" onclick="navigateTo('scan.html')">
+                <div class="scan-button">
+                    <span class="sf-symbol camera-fill scan-button-icon"></span>
+                </div>
+            </div>
+            <div class="tab-item" onclick="navigateTo('history.html')">
+                <div class="sf-symbol history"></div>
+                <div class="tab-label">历史</div>
+            </div>
+            <div class="tab-item" onclick="navigateTo('profile.html')">
+                <div class="sf-symbol person"></div>
+                <div class="tab-label">我的</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 模拟分享菜单
+        function showShareSheet(title) {
+            showActionSheet('分享到', ['微信好友', '朋友圈', '保存图片', '复制链接', '更多...']);
+        }
+    </script>
+</body>
+</html> 

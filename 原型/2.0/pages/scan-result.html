@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 识别结果</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--separator-color);
+            border-top-color: var(--text-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        .editable-field {
+            position: relative;
+            padding-right: 24px;
+        }
+        
+        .edit-icon {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .result-image {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            background-color: var(--bg-tertiary);
+        }
+
+        /* 新增样式 */
+        .nutrition-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--separator-color);
+        }
+
+        .nutrition-item:last-child {
+            border-bottom: none;
+        }
+
+        .nutrition-value {
+            display: flex;
+            align-items: center;
+        }
+
+        .nrv-percentage {
+            margin-left: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .warning-high {
+            color: #FF3B30;
+            font-weight: 600;
+        }
+
+        .warning-low {
+            color: #FF9500;
+            font-weight: 600;
+        }
+
+        .nutrition-tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+
+        .tag-high {
+            background-color: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+        }
+
+        .tag-low {
+            background-color: rgba(255, 149, 0, 0.1);
+            color: #FF9500;
+        }
+
+        .nrv-info {
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+        
+        /* 新增布局优化样式 */
+        .nutrition-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nutrition-value-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .nutrition-amount {
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .nutrition-tags {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 4px;
+        }
+        
+        .nutrition-label {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 加载动画 (初始显示然后隐藏) -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>正在识别营养成分...</p>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <button class="navbar-button" onclick="window.location.href='scan.html'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="navbar-title">识别结果</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container">
+        <!-- 识别图像 -->
+        <img src="https://placehold.co/600x200/333/FFF?text=Nutrition+Facts" alt="营养成分表" class="result-image">
+        
+        <!-- 自动识别结果 -->
+        <div class="card">
+            <h3>识别结果</h3>
+            <p class="text-small" style="margin-bottom: 16px;">您可以点击修改未正确识别的内容</p>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label editable-field">
+                    食品名称
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="edit-icon">
+                        <path d="M11 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 15H12L21 6C21.5304 5.46957 21.8284 4.73478 21.8284 3.96569C21.8284 3.1966 21.5304 2.46183 21 1.93141C20.4696 1.40099 19.7348 1.10303 18.9657 1.10303C18.1966 1.10303 17.4619 1.40099 16.9314 1.93141L8 11V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="nutrition-value">纯燕麦片</div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label editable-field">
+                    品牌
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="edit-icon">
+                        <path d="M11 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 15H12L21 6C21.5304 5.46957 21.8284 4.73478 21.8284 3.96569C21.8284 3.1966 21.5304 2.46183 21 1.93141C20.4696 1.40099 19.7348 1.10303 18.9657 1.10303C18.1966 1.10303 17.4619 1.40099 16.9314 1.93141L8 11V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="nutrition-value">健康谷物</div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">热量</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">367 千卡/100g</div>
+                        <span class="nrv-percentage">18% NRV</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">蛋白质</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">13.7 g/100g</div>
+                        <span class="nrv-percentage">23% NRV</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">脂肪</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">7.0 g/100g</div>
+                        <span class="nrv-percentage">12% NRV</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">饱和脂肪</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">12.5 g/100g</div>
+                        <span class="nrv-percentage warning-high">63% NRV</span>
+                    </div>
+                    <div class="nutrition-tags">
+                        <span class="nutrition-tag tag-high">饱和脂肪高</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">碳水化合物</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">59.0 g/100g</div>
+                        <span class="nrv-percentage">20% NRV</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">糖</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">1.0 g/100g</div>
+                        <span class="nrv-percentage warning-low">2% NRV</span>
+                    </div>
+                    <div class="nutrition-tags">
+                        <span class="nutrition-tag tag-low">低糖</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">钠</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">2 mg/100g</div>
+                        <span class="nrv-percentage warning-low">0.1% NRV</span>
+                    </div>
+                    <div class="nutrition-tags">
+                        <span class="nutrition-tag tag-low">低钠</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nutrition-item">
+                <div class="nutrition-label">膳食纤维</div>
+                <div class="nutrition-content">
+                    <div class="nutrition-value-row">
+                        <div class="nutrition-amount">10.6 g/100g</div>
+                        <span class="nrv-percentage warning-high">42% NRV</span>
+                    </div>
+                    <div class="nutrition-tags">
+                        <span class="nutrition-tag tag-high">纤维丰富</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nrv-info">
+                NRV：营养素参考值(Nutrient Reference Values)，基于2000千卡/天的膳食摄入量计算的百分比
+            </div>
+        </div>
+        
+        <!-- 配料表 -->
+        <div class="card">
+            <h3>配料表</h3>
+            <p class="text-medium">全谷物燕麦。</p>
+            <p class="text-small" style="margin-top: 8px;">含有麸质，可能含有坚果成分。</p>
+        </div>
+        
+        <!-- 按钮 -->
+        <div class="flex gap-16" style="margin-top: 24px; margin-bottom: 16px;">
+            <button class="button button-secondary" onclick="window.location.href='scan.html'">重新扫描</button>
+            <button class="button" onclick="window.location.href='cover-photo.html'">继续</button>
+        </div>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        // 模拟加载时间
+        setTimeout(function() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }, 1500);
+        
+        // 添加可编辑字段的点击事件
+        const editableFields = document.querySelectorAll('.editable-field');
+        editableFields.forEach(field => {
+            field.addEventListener('click', function() {
+                const label = this.textContent.trim();
+                const valueElement = this.nextElementSibling;
+                const currentValue = valueElement.textContent.trim();
+                
+                const newValue = prompt(`请修改"${label}"：`, currentValue);
+                if (newValue !== null && newValue !== '') {
+                    valueElement.textContent = newValue;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

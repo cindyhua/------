@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 分享预览</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .preview-container {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+        
+        .preview-image {
+            width: 100%;
+            max-width: 300px;
+            aspect-ratio: 1/1.5;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .share-option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background-color: var(--bg-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .share-option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-tertiary);
+            font-size: 24px;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--separator-color);
+            border-top-color: var(--text-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 加载动画 (初始显示然后隐藏) -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>正在生成分享图片...</p>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <button class="navbar-button" onclick="window.location.href='share-templates.html'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="navbar-title">分享预览</div>
+        <button class="navbar-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container">
+        <!-- 预览图片 -->
+        <div class="preview-container">
+            <img src="https://placehold.co/600x900/333/FFF?text=Nutrition+Share" alt="分享图片预览" class="preview-image">
+        </div>
+        
+        <h3>选择分享方式</h3>
+        
+        <!-- 分享选项 -->
+        <div class="share-option">
+            <div class="share-option-icon" style="background-color: #07C160; color: white;">W</div>
+            <div class="flex-1">
+                <div class="text-large">微信</div>
+                <div class="text-small">分享给微信好友或朋友圈</div>
+            </div>
+        </div>
+        
+        <div class="share-option">
+            <div class="share-option-icon" style="background-color: #FA7171; color: white;">W</div>
+            <div class="flex-1">
+                <div class="text-large">微博</div>
+                <div class="text-small">分享到微博</div>
+            </div>
+        </div>
+        
+        <div class="share-option">
+            <div class="share-option-icon" style="background-color: #FF2442; color: white;">R</div>
+            <div class="flex-1">
+                <div class="text-large">小红书</div>
+                <div class="text-small">分享到小红书</div>
+            </div>
+        </div>
+        
+        <div class="share-option">
+            <div class="share-option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <div class="text-large">保存到相册</div>
+                <div class="text-small">保存图片到手机相册</div>
+            </div>
+        </div>
+        
+        <div class="share-option">
+            <div class="share-option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 16L8.58579 11.4142C9.36683 10.6332 10.6332 10.6332 11.4142 11.4142L16 16M14 14L15.5858 12.4142C16.3668 11.6332 17.6332 11.6332 18.4142 12.4142L20 14M14 8H14.01M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <div class="text-large">更多选项</div>
+                <div class="text-small">其他分享方式</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        // 模拟加载时间
+        setTimeout(function() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }, 1500);
+        
+        // 绑定分享选项点击事件
+        const shareOptions = document.querySelectorAll('.share-option');
+        shareOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // 模拟分享行为
+                alert('分享功能在实际应用中将调用系统分享');
+            });
+        });
+    </script>
+</body>
+</html> 

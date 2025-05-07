@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 原型</title>
+    <style>
+        :root {
+            --bg-primary: #FFFFFF;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --separator-color: #EEEEEE;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #000000;
+                --text-primary: #FFFFFF;
+                --text-secondary: #BBBBBB;
+                --separator-color: #333333;
+            }
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        .device-container {
+            position: relative;
+            width: 390px;
+            height: 844px;
+            background: var(--bg-primary);
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            border: 1px solid var(--separator-color);
+        }
+        
+        .device-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 34px;
+            background: #000;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            z-index: 10;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .page-selector {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        select {
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--separator-color);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            min-width: 280px;
+        }
+        
+        .description {
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+        
+        .page-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--separator-color);
+            transition: all 0.2s ease;
+        }
+        
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .page-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .page-description {
+            font-size: 14px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>食物营养扫描助手 - iOS应用原型</h1>
+        
+        <div class="description">
+            这是一款通过拍照识别食品包装上的营养成分表，并将其与中国营养推荐标准对比的iOS应用原型。设计采用单色极简主义风格，符合iOS Human Interface Guidelines。
+        </div>
+        
+        <div class="page-selector">
+            <select id="pageSelect" onchange="changePage()">
+                <option value="pages/home.html">主页面</option>
+                <option value="pages/scan.html">扫描界面</option>
+                <option value="pages/scan-confirm.html">确认识别区域</option>
+                <option value="pages/scan-result.html">识别结果</option>
+                <option value="pages/cover-photo.html">封面拍摄</option>
+                <option value="pages/food-detail.html">食品详情</option>
+                <option value="pages/pk-select.html">PK食品选择</option>
+                <option value="pages/pk-result.html">PK对比结果</option>
+                <option value="pages/share-templates.html">分享模板选择</option>
+                <option value="pages/share-preview.html">分享预览</option>
+                <option value="pages/history.html">历史记录</option>
+                <option value="pages/profile.html">个人中心</option>
+                <option value="pages/profile-edit.html">个人信息设置</option>
+                <option value="pages/diet-preferences.html">饮食偏好设置</option>
+            </select>
+        </div>
+        
+        <div class="device-container">
+            <div class="device-notch"></div>
+            <iframe id="previewFrame" src="pages/home.html" frameborder="0"></iframe>
+        </div>
+        
+        <h2>所有界面</h2>
+        <div class="pages-grid">
+            <a href="#" class="page-card" onclick="loadPage('pages/home.html'); return false;">
+                <div class="page-title">主页面</div>
+                <div class="page-description">应用首页，包含扫描按钮和最近记录</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/scan.html'); return false;">
+                <div class="page-title">扫描界面</div>
+                <div class="page-description">相机取景器界面，用于拍摄食品包装</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/scan-confirm.html'); return false;">
+                <div class="page-title">确认识别区域</div>
+                <div class="page-description">调整和确认需要识别的区域</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/scan-result.html'); return false;">
+                <div class="page-title">识别结果</div>
+                <div class="page-description">显示识别出的营养成分数据</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/cover-photo.html'); return false;">
+                <div class="page-title">封面拍摄</div>
+                <div class="page-description">拍摄食品封面照片界面</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/food-detail.html'); return false;">
+                <div class="page-title">食品详情</div>
+                <div class="page-description">展示食品详细营养信息和评分</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/pk-select.html'); return false;">
+                <div class="page-title">PK食品选择</div>
+                <div class="page-description">选择需要对比的两种食品</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/pk-result.html'); return false;">
+                <div class="page-title">PK对比结果</div>
+                <div class="page-description">展示两种食品的营养对比结果</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/share-templates.html'); return false;">
+                <div class="page-title">分享模板选择</div>
+                <div class="page-description">选择分享图片的模板样式</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/share-preview.html'); return false;">
+                <div class="page-title">分享预览</div>
+                <div class="page-description">预览生成的分享图片</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/history.html'); return false;">
+                <div class="page-title">历史记录</div>
+                <div class="page-description">已扫描食品的历史记录列表</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/profile.html'); return false;">
+                <div class="page-title">个人中心</div>
+                <div class="page-description">用户个人信息和设置入口</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/profile-edit.html'); return false;">
+                <div class="page-title">个人信息设置</div>
+                <div class="page-description">编辑个人基本信息</div>
+            </a>
+            <a href="#" class="page-card" onclick="loadPage('pages/diet-preferences.html'); return false;">
+                <div class="page-title">饮食偏好设置</div>
+                <div class="page-description">设置个人饮食习惯和目标</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function changePage() {
+            const select = document.getElementById('pageSelect');
+            const iframe = document.getElementById('previewFrame');
+            iframe.src = select.value;
+        }
+        
+        function loadPage(url) {
+            const select = document.getElementById('pageSelect');
+            const iframe = document.getElementById('previewFrame');
+            iframe.src = url;
+            
+            // 同步下拉框选择
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === url) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

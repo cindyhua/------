@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 首页</title>
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container" style="margin-top: 50px;">
+        <h1>营养扫描</h1>
+        <p class="text-medium">扫描食品包装，获取营养分析</p>
+        
+        <!-- 最近扫描 -->
+        <div class="recent-section">
+            <div class="flex justify-between items-center">
+                <h3>最近扫描</h3>
+                <a href="history.html" class="text-medium">查看全部</a>
+            </div>
+            
+            <div class="card">
+                <div class="flex items-center gap-16">
+                    <img src="https://placehold.co/80x80/333/FFF" alt="食品图片" class="avatar" style="width: 60px; height: 60px;">
+                    <div class="flex-1">
+                        <div class="text-large">坚果巧克力能量棒</div>
+                        <div class="text-small">自然能量 · 2023-09-15</div>
+                        <div class="flex items-center gap-8" style="margin-top: 4px;">
+                            <div style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px;">B</div>
+                            <div class="text-small">营养评分</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="flex items-center gap-16">
+                    <img src="https://placehold.co/80x80/333/FFF" alt="食品图片" class="avatar" style="width: 60px; height: 60px;">
+                    <div class="flex-1">
+                        <div class="text-large">原味酸奶</div>
+                        <div class="text-small">纯然牧场 · 2023-09-14</div>
+                        <div class="flex items-center gap-8" style="margin-top: 4px;">
+                            <div style="background: #000; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px;">A</div>
+                            <div class="text-small">营养评分</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 营养小贴士 -->
+        <h3 style="margin-top: 24px;">营养小贴士</h3>
+        <div class="card">
+            <div class="text-large" style="margin-bottom: 8px;">每日钠摄入量不应超过5g</div>
+            <p class="text-medium">过多的钠摄入会增加高血压风险，选择低钠食品有助于维持健康血压水平。</p>
+        </div>
+        
+        <!-- 扫描按钮 -->
+        <div style="position: fixed; bottom: 100px; left: 0; right: 0; display: flex; justify-content: center;">
+            <a href="scan.html" class="button button-scan">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M4 12H20" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 4L12 20" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <a href="home.html" class="tab-bar-item active">
+            <div class="tab-bar-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>首页</div>
+        </a>
+        <a href="history.html" class="tab-bar-item">
+            <div class="tab-bar-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3.05 11C3.27151 8.68263 4.51919 6.56129 6.47881 5.13012C8.43842 3.69894 10.8743 3.07672 13.2407 3.39533C15.6071 3.71394 17.7479 4.94615 19.1655 6.81493C20.5831 8.6837 21.1559 11.0355 20.7625 13.342C20.3691 15.6485 19.0423 17.7089 17.0597 19.0839C15.0772 20.4589 12.6037 21.0229 10.2268 20.6185C7.84989 20.2141 5.70713 18.8966 4.28299 16.8916C2.85885 14.8867 2.27122 12.432 2.64 10.02" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>历史</div>
+        </a>
+        <a href="pk-select.html" class="tab-bar-item">
+            <div class="tab-bar-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 12L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 6L4 12L10 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>PK</div>
+        </a>
+        <a href="profile.html" class="tab-bar-item">
+            <div class="tab-bar-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>我的</div>
+        </a>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        function initHomePage() {
+            // 加载最近扫描记录
+            const historyItems = getHistoryItems().slice(0, 2);
+            const recentSection = document.querySelector('.recent-section');
+            
+            // 如果没有记录，显示空状态
+            if (historyItems.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.innerHTML = `
+                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-text">暂无扫描记录，点击下方按钮开始扫描</div>
+                `;
+                recentSection.appendChild(emptyState);
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 食品详情</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .food-cover {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .nutrition-score {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--separator-color);
+            margin-bottom: 16px;
+        }
+        
+        .score-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 32px;
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .nutrition-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        
+        .nutrition-fill {
+            height: 100%;
+            background-color: var(--text-primary);
+            border-radius: 4px;
+        }
+        
+        .actions {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            gap: 16px;
+            z-index: 90;
+        }
+        
+        .nutrition-highlight {
+            padding: 8px 12px;
+            border-radius: 8px;
+            background-color: var(--bg-tertiary);
+            margin-right: 8px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        .highlight-positive {
+            border-left: 3px solid #000;
+        }
+        
+        .highlight-negative {
+            border-left: 3px solid #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <button class="navbar-button" onclick="goBack()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="navbar-title">食品详情</div>
+        <button class="navbar-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container">
+        <!-- 食品封面 -->
+        <img src="https://placehold.co/800x400/333/FFF?text=Oatmeal" alt="纯燕麦片" class="food-cover">
+        
+        <!-- 食品信息 -->
+        <h1>纯燕麦片</h1>
+        <p class="text-medium">健康谷物</p>
+        
+        <!-- 营养评分 -->
+        <div class="card">
+            <div class="nutrition-score">
+                <div class="score-circle">B</div>
+                <div>
+                    <h3>营养评分</h3>
+                    <p class="text-medium">整体营养质量良好</p>
+                </div>
+            </div>
+            
+            <div class="flex" style="flex-wrap: wrap;">
+                <span class="nutrition-highlight highlight-positive">高膳食纤维</span>
+                <span class="nutrition-highlight highlight-positive">低添加糖</span>
+                <span class="nutrition-highlight highlight-positive">低钠</span>
+                <span class="nutrition-highlight highlight-negative">较高热量</span>
+            </div>
+        </div>
+        
+        <!-- 每日营养对比 -->
+        <div class="card">
+            <h3>每日营养对比</h3>
+            <p class="text-small" style="margin-bottom: 16px;">基于标准食用量100g计算</p>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="flex justify-between">
+                    <div class="text-medium">热量</div>
+                    <div class="text-medium">367千卡 / 18.4%</div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-fill" style="width: 18.4%;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="flex justify-between">
+                    <div class="text-medium">蛋白质</div>
+                    <div class="text-medium">13.7g / 27.4%</div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-fill" style="width: 27.4%;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="flex justify-between">
+                    <div class="text-medium">脂肪</div>
+                    <div class="text-medium">7.0g / 11.7%</div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-fill" style="width: 11.7%;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="flex justify-between">
+                    <div class="text-medium">碳水化合物</div>
+                    <div class="text-medium">59.0g / 19.7%</div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-fill" style="width: 19.7%;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="flex justify-between">
+                    <div class="text-medium">糖</div>
+                    <div class="text-medium">1.0g / 2.0%</div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-fill" style="width: 2.0%;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="flex justify-between">
+                    <div class="text-medium">膳食纤维</div>
+                    <div class="text-medium">10.6g / 42.4%</div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-fill" style="width: 42.4%;"></div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="flex justify-between">
+                    <div class="text-medium">钠</div>
+                    <div class="text-medium">2mg / 0.1%</div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-fill" style="width: 0.1%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 配料表 -->
+        <div class="card">
+            <h3>配料表</h3>
+            <p class="text-medium">全谷物燕麦。</p>
+            <p class="text-small" style="margin-top: 8px;">含有麸质，可能含有坚果成分。</p>
+        </div>
+        
+        <!-- 营养专家点评 -->
+        <div class="card">
+            <h3>营养专家点评</h3>
+            <p class="text-medium">燕麦片是优质的碳水化合物来源，富含可溶性纤维β-葡聚糖，有助于降低胆固醇。每日食用适量纯燕麦片，有助于维持健康的血糖水平和促进肠道健康。</p>
+        </div>
+        
+        <!-- 食用建议 -->
+        <div class="card">
+            <h3>食用建议</h3>
+            <p class="text-medium">建议每次食用30-40g，可搭配牛奶、酸奶或新鲜水果食用，增加膳食多样性。</p>
+        </div>
+        
+        <!-- 占位空间，防止底部按钮遮挡内容 -->
+        <div style="height: 100px;"></div>
+    </div>
+    
+    <!-- 操作按钮 -->
+    <div class="actions">
+        <a href="pk-select.html" class="button button-secondary">
+            <div class="flex justify-between items-center">
+                <span>PK对比</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 12L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 6L4 12L10 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </a>
+        <a href="share-templates.html" class="button">
+            <div class="flex justify-between items-center">
+                <span>分享</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 6.65685 16.3431 8 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6 15C7.65685 15 9 13.6569 9 12C9 10.3431 7.65685 9 6 9C4.34315 9 3 10.3431 3 12C3 13.6569 4.34315 15 6 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C16.3431 16 15 17.3431 15 19C15 20.6569 16.3431 22 18 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.59 13.51L15.42 17.49" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M15.41 6.51L8.59 10.49" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </a>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        function initFoodDetailPage() {
+            // 从URL获取食品ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const foodId = urlParams.get('id');
+            
+            if (foodId) {
+                // 获取食品详情
+                const foodDetail = getFoodDetail(parseInt(foodId));
+                
+                if (foodDetail) {
+                    // 更新UI显示食品详情
+                    document.querySelector('h1').textContent = foodDetail.name;
+                    document.querySelector('.text-medium').textContent = foodDetail.brand;
+                    document.querySelector('.score-circle').textContent = foodDetail.score;
+                    // 更新其他信息...
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

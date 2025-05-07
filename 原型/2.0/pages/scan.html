@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 扫描</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+        }
+        
+        .scan-help-text {
+            position: absolute;
+            top: 20%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            padding: 0 20px;
+        }
+        
+        .scan-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            background-color: #fff;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .scan-button::after {
+            content: '';
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            border: 2px solid #000;
+        }
+        
+        .flash-button, .gallery-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 相机视图 -->
+    <div class="camera-view">
+        <!-- 扫描框 -->
+        <div class="scan-frame"></div>
+        
+        <!-- 提示文字 -->
+        <div class="scan-help-text">
+            请将营养成分表对准扫描框
+        </div>
+        
+        <!-- 关闭按钮 -->
+        <a href="home.html" class="close-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+        
+        <!-- 扫描控制 -->
+        <div class="scan-controls">
+            <div class="flash-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            
+            <a href="scan-confirm.html" class="scan-button" onclick="simulateCamera(null, function() { window.location.href = 'scan-confirm.html'; }); return false;"></a>
+            
+            <div class="gallery-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        // 闪光灯开关
+        document.querySelector('.flash-button').addEventListener('click', function() {
+            this.classList.toggle('active');
+            if (this.classList.contains('active')) {
+                this.style.backgroundColor = '#fff';
+                this.style.color = '#000';
+            } else {
+                this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                this.style.color = '#fff';
+            }
+        });
+        
+        // 从相册选择
+        document.querySelector('.gallery-button').addEventListener('click', function() {
+            window.location.href = 'scan-confirm.html';
+        });
+        
+        // 添加相机扫描框动画
+        const scanFrame = document.querySelector('.scan-frame');
+        scanFrame.style.boxShadow = '0 0 0 1000px rgba(0, 0, 0, 0.5)';
+        
+        // 扫描线动画
+        const scanLine = document.createElement('div');
+        scanLine.style.position = 'absolute';
+        scanLine.style.left = '0';
+        scanLine.style.right = '0';
+        scanLine.style.height = '2px';
+        scanLine.style.backgroundColor = '#fff';
+        scanLine.style.top = '0';
+        scanFrame.appendChild(scanLine);
+        
+        let direction = 1;
+        let position = 0;
+        
+        function animateScanLine() {
+            position += direction * 0.5;
+            if (position >= 100 || position <= 0) {
+                direction *= -1;
+            }
+            scanLine.style.top = `${position}%`;
+            requestAnimationFrame(animateScanLine);
+        }
+        
+        animateScanLine();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 历史记录</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/sf-symbols.css">
+    <link rel="stylesheet" href="../css/monochrome-theme.css">
+    <script src="../js/app.js"></script>
+    <style>
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            height: 36px;
+            background-color: #F5F5F5;
+            border: none;
+            border-radius: 4px;
+            padding: 0 40px;
+            font-size: 15px;
+            color: #000000;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 8px;
+            color: #666666;
+        }
+        
+        .search-clear {
+            position: absolute;
+            right: 12px;
+            top: 8px;
+            color: #666666;
+            display: none;
+        }
+        
+        .filters {
+            display: flex;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .filter-button {
+            padding: 6px 16px;
+            background-color: #F5F5F5;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-right: 10px;
+            white-space: nowrap;
+            color: #333333;
+            border: none;
+        }
+        
+        .filter-button.active {
+            background-color: #000000;
+            color: white;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .history-item {
+            display: flex;
+            padding: 16px 0;
+            border-bottom: 1px solid #EEEEEE;
+        }
+        
+        .history-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            margin-right: 14px;
+            background-color: #F5F5F5;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .history-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .history-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #000000;
+        }
+        
+        .history-date {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+        
+        .nutrition-badges {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .nutrition-badge {
+            background-color: #F5F5F5;
+            color: #000000;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        
+        .history-score {
+            display: flex;
+            margin-left: auto;
+            padding-left: 12px;
+        }
+        
+        .score-badge {
+            width: 30px;
+            height: 30px;
+            background-color: #F5F5F5;
+            color: #000000;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .score-a {
+            background-color: #333333;
+            color: white;
+        }
+        
+        .score-b {
+            background-color: #555555;
+            color: white;
+        }
+        
+        .score-c {
+            background-color: #777777;
+            color: white;
+        }
+        
+        .score-d {
+            background-color: #999999;
+            color: white;
+        }
+        
+        .score-e {
+            background-color: #BBBBBB;
+            color: #333333;
+        }
+        
+        .no-history {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .no-history-icon {
+            font-size: 36px;
+            margin-bottom: 24px;
+            color: #999999;
+        }
+        
+        .no-history-text {
+            font-size: 15px;
+            color: #666666;
+            max-width: 240px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .no-history-button {
+            padding: 12px 20px;
+            background-color: #000000;
+            color: white;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <div class="nav-bar-content">
+            <div></div>
+            <div class="nav-title">历史记录</div>
+            <button class="nav-button" onclick="vibrate(10); showActionSheet('选择操作', ['导出数据', '设置', '清空历史记录'])">
+                <span class="sf-symbol ellipsis"></span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 页面内容 -->
+    <div class="page-content">
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="搜索食物名称" onkeyup="searchHistory(this.value)">
+            <span class="search-icon sf-symbol search"></span>
+            <span class="search-clear sf-symbol xmark-circle" onclick="clearSearch()"></span>
+        </div>
+        
+        <!-- 过滤选项 -->
+        <div class="filters">
+            <button class="filter-button active" onclick="filterHistory('all')">全部</button>
+            <button class="filter-button" onclick="filterHistory('drinks')">饮料</button>
+            <button class="filter-button" onclick="filterHistory('snacks')">零食</button>
+            <button class="filter-button" onclick="filterHistory('meals')">主食</button>
+            <button class="filter-button" onclick="filterHistory('fruits')">水果</button>
+            <button class="filter-button" onclick="filterHistory('others')">其他</button>
+        </div>
+        
+        <!-- 历史记录列表 -->
+        <div class="history-list" id="historyList">
+            <div class="history-item" onclick="navigateTo('result.html')">
+                <div class="history-image" style="background-image: url('../images/food1.jpg');"></div>
+                <div class="history-info">
+                    <div>
+                        <div class="history-title">蒙牛纯牛奶</div>
+                        <div class="history-date">今天 10:30</div>
+                    </div>
+                    <div class="nutrition-badges">
+                        <div class="nutrition-badge">钙质丰富</div>
+                        <div class="nutrition-badge">优质蛋白</div>
+                    </div>
+                </div>
+                <div class="history-score">
+                    <div class="score-badge score-b">B</div>
+                </div>
+            </div>
+            
+            <div class="history-item" onclick="navigateTo('result.html')">
+                <div class="history-image" style="background-image: url('../images/food2.jpg');"></div>
+                <div class="history-info">
+                    <div>
+                        <div class="history-title">维他柠檬茶</div>
+                        <div class="history-date">昨天 14:22</div>
+                    </div>
+                    <div class="nutrition-badges">
+                        <div class="nutrition-badge">含糖饮料</div>
+                        <div class="nutrition-badge">维生素C</div>
+                    </div>
+                </div>
+                <div class="history-score">
+                    <div class="score-badge score-c">C</div>
+                </div>
+            </div>
+            
+            <div class="history-item" onclick="navigateTo('result.html')">
+                <div class="history-image" style="background-image: url('../images/food3.jpg');"></div>
+                <div class="history-info">
+                    <div>
+                        <div class="history-title">旺旺雪饼</div>
+                        <div class="history-date">昨天 08:15</div>
+                    </div>
+                    <div class="nutrition-badges">
+                        <div class="nutrition-badge">高碳水</div>
+                        <div class="nutrition-badge">含反式脂肪</div>
+                    </div>
+                </div>
+                <div class="history-score">
+                    <div class="score-badge score-d">D</div>
+                </div>
+            </div>
+            
+            <div class="history-item" onclick="navigateTo('result.html')">
+                <div class="history-image" style="background-image: url('../images/food4.jpg');"></div>
+                <div class="history-info">
+                    <div>
+                        <div class="history-title">康师傅红烧牛肉面</div>
+                        <div class="history-date">前天 12:45</div>
+                    </div>
+                    <div class="nutrition-badges">
+                        <div class="nutrition-badge">高钠</div>
+                        <div class="nutrition-badge">高热量</div>
+                    </div>
+                </div>
+                <div class="history-score">
+                    <div class="score-badge score-e">E</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 无记录状态（初始状态隐藏） -->
+        <div class="no-history" style="display: none;">
+            <div class="no-history-icon sf-symbol doc"></div>
+            <div class="no-history-text">还没有扫描记录，点击下方按钮开始扫描食品包装</div>
+            <a href="scan.html" class="no-history-button">
+                <span class="sf-symbol scan"></span>
+                扫描食品
+            </a>
+        </div>
+    </div>
+    
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-bar-content">
+            <div class="tab-item" onclick="navigateTo('home.html')">
+                <div class="sf-symbol home"></div>
+                <div class="tab-label">首页</div>
+            </div>
+            <div class="tab-item scan-tab" onclick="navigateTo('scan.html')">
+                <div class="scan-button">
+                    <span class="sf-symbol camera-fill scan-button-icon"></span>
+                </div>
+            </div>
+            <div class="tab-item active" onclick="navigateTo('history.html')">
+                <div class="sf-symbol history"></div>
+                <div class="tab-label">历史</div>
+            </div>
+            <div class="tab-item" onclick="navigateTo('profile.html')">
+                <div class="sf-symbol person"></div>
+                <div class="tab-label">我的</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 搜索历史记录
+        function searchHistory(query) {
+            query = query.toLowerCase().trim();
+            const clearButton = document.querySelector('.search-clear');
+            
+            if (query.length > 0) {
+                clearButton.style.display = 'block';
+                
+                // 模拟搜索逻辑
+                const items = document.querySelectorAll('.history-item');
+                items.forEach(item => {
+                    const title = item.querySelector('.history-title').textContent.toLowerCase();
+                    if (title.includes(query)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // 检查是否有搜索结果
+                let hasResults = false;
+                items.forEach(item => {
+                    if (item.style.display !== 'none') {
+                        hasResults = true;
+                    }
+                });
+                
+                // 如果没有搜索结果，显示空状态
+                const noHistory = document.querySelector('.no-history');
+                if (!hasResults) {
+                    noHistory.querySelector('.no-history-text').textContent = '没有找到匹配的记录';
+                    noHistory.style.display = 'flex';
+                    document.getElementById('historyList').style.display = 'none';
+                } else {
+                    noHistory.style.display = 'none';
+                    document.getElementById('historyList').style.display = 'block';
+                }
+            } else {
+                clearButton.style.display = 'none';
+                
+                // 重置所有项目的显示状态
+                const items = document.querySelectorAll('.history-item');
+                items.forEach(item => {
+                    item.style.display = 'flex';
+                });
+                
+                document.querySelector('.no-history').style.display = 'none';
+                document.getElementById('historyList').style.display = 'block';
+            }
+        }
+        
+        // 清除搜索
+        function clearSearch() {
+            const searchInput = document.querySelector('.search-input');
+            searchInput.value = '';
+            searchHistory('');
+            vibrate(5);
+        }
+        
+        // 过滤历史记录
+        function filterHistory(category) {
+            // 更新过滤按钮状态
+            const filterButtons = document.querySelectorAll('.filter-button');
+            filterButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.textContent.toLowerCase().includes(category) || 
+                    (category === 'all' && button.textContent === '全部')) {
+                    button.classList.add('active');
+                }
+            });
+            
+            vibrate(5);
+            
+            // 模拟过滤逻辑
+            const historyItems = document.querySelectorAll('.history-item');
+            
+            if (category === 'all') {
+                historyItems.forEach(item => {
+                    item.style.display = 'flex';
+                });
+                return;
+            }
+            
+            // 根据类别显示或隐藏项目（这里仅作演示）
+            historyItems.forEach((item, index) => {
+                let shouldShow = false;
+                
+                // 饮料类
+                if (category === 'drinks' && (index === 0 || index === 1)) {
+                    shouldShow = true;
+                }
+                
+                // 零食类
+                if (category === 'snacks' && index === 2) {
+                    shouldShow = true;
+                }
+                
+                // 主食类
+                if (category === 'meals' && index === 3) {
+                    shouldShow = true;
+                }
+                
+                item.style.display = shouldShow ? 'flex' : 'none';
+            });
+            
+            // 检查是否有过滤结果
+            let hasResults = false;
+            historyItems.forEach(item => {
+                if (item.style.display !== 'none') {
+                    hasResults = true;
+                }
+            });
+            
+            // 如果没有过滤结果，显示空状态
+            const noHistory = document.querySelector('.no-history');
+            if (!hasResults) {
+                noHistory.querySelector('.no-history-text').textContent = '没有该类别的记录';
+                noHistory.style.display = 'flex';
+                document.getElementById('historyList').style.display = 'none';
+            } else {
+                noHistory.style.display = 'none';
+                document.getElementById('historyList').style.display = 'block';
+            }
+        }
+        
+        // 页面加载时检查是否有扫描记录
+        window.addEventListener('load', function() {
+            // 如果没有扫描记录标志，则显示空状态
+            const hasRecords = localStorage.getItem('hasScannedItems');
+            
+            if (!hasRecords) {
+                document.querySelector('.no-history').style.display = 'flex';
+                document.getElementById('historyList').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 

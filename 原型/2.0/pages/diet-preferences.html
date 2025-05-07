@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 饮食偏好设置</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .section-title {
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .preference-group {
+            margin-bottom: 24px;
+        }
+        
+        .preference-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .preference-chip {
+            padding: 10px 16px;
+            border-radius: 20px;
+            background-color: var(--bg-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+        
+        .preference-chip.selected {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
+        
+        .allergy-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background-color: var(--bg-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--separator-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--text-primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .nutrient-preference {
+            margin-bottom: 16px;
+        }
+        
+        .nutrient-slider {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background-color: var(--bg-tertiary);
+            position: relative;
+            margin: 28px 0 12px;
+        }
+        
+        .nutrient-slider-track {
+            position: absolute;
+            height: 100%;
+            background-color: var(--text-primary);
+            border-radius: 2px;
+        }
+        
+        .nutrient-slider-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--text-primary);
+            border: 3px solid var(--bg-primary);
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: -4px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <button class="navbar-button" onclick="window.location.href='profile-edit.html'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="navbar-title">饮食偏好设置</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container">
+        <!-- 饮食习惯 -->
+        <div class="preference-group">
+            <h3 class="section-title">饮食习惯</h3>
+            <div class="preference-chips">
+                <div class="preference-chip selected">无特殊偏好</div>
+                <div class="preference-chip">素食</div>
+                <div class="preference-chip">纯素</div>
+                <div class="preference-chip">低碳水</div>
+                <div class="preference-chip">生酮</div>
+                <div class="preference-chip">地中海</div>
+                <div class="preference-chip">高蛋白</div>
+                <div class="preference-chip">无麸质</div>
+                <div class="preference-chip">低脂</div>
+            </div>
+        </div>
+        
+        <!-- 食品过敏 -->
+        <div class="preference-group">
+            <h3 class="section-title">食品过敏或敏感</h3>
+            
+            <div class="allergy-item">
+                <div>麸质（小麦等）</div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="allergy-item">
+                <div>乳制品</div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="allergy-item">
+                <div>坚果</div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="allergy-item">
+                <div>花生</div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="allergy-item">
+                <div>大豆</div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="allergy-item">
+                <div>海鲜</div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <div class="allergy-item">
+                <div>鸡蛋</div>
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- 营养素偏好 -->
+        <div class="preference-group">
+            <h3 class="section-title">营养素偏好</h3>
+            
+            <div class="nutrient-preference">
+                <div class="flex justify-between">
+                    <div>蛋白质</div>
+                    <div>中高</div>
+                </div>
+                <div class="nutrient-slider">
+                    <div class="nutrient-slider-track" style="width: 75%"></div>
+                    <div class="nutrient-slider-handle" style="left: 75%"></div>
+                </div>
+                <div class="range-labels">
+                    <div>低</div>
+                    <div>中</div>
+                    <div>高</div>
+                </div>
+            </div>
+            
+            <div class="nutrient-preference">
+                <div class="flex justify-between">
+                    <div>碳水化合物</div>
+                    <div>中</div>
+                </div>
+                <div class="nutrient-slider">
+                    <div class="nutrient-slider-track" style="width: 50%"></div>
+                    <div class="nutrient-slider-handle" style="left: 50%"></div>
+                </div>
+                <div class="range-labels">
+                    <div>低</div>
+                    <div>中</div>
+                    <div>高</div>
+                </div>
+            </div>
+            
+            <div class="nutrient-preference">
+                <div class="flex justify-between">
+                    <div>脂肪</div>
+                    <div>中低</div>
+                </div>
+                <div class="nutrient-slider">
+                    <div class="nutrient-slider-track" style="width: 35%"></div>
+                    <div class="nutrient-slider-handle" style="left: 35%"></div>
+                </div>
+                <div class="range-labels">
+                    <div>低</div>
+                    <div>中</div>
+                    <div>高</div>
+                </div>
+            </div>
+            
+            <div class="nutrient-preference">
+                <div class="flex justify-between">
+                    <div>糖</div>
+                    <div>低</div>
+                </div>
+                <div class="nutrient-slider">
+                    <div class="nutrient-slider-track" style="width: 20%"></div>
+                    <div class="nutrient-slider-handle" style="left: 20%"></div>
+                </div>
+                <div class="range-labels">
+                    <div>低</div>
+                    <div>中</div>
+                    <div>高</div>
+                </div>
+            </div>
+            
+            <div class="nutrient-preference">
+                <div class="flex justify-between">
+                    <div>钠</div>
+                    <div>低</div>
+                </div>
+                <div class="nutrient-slider">
+                    <div class="nutrient-slider-track" style="width: 25%"></div>
+                    <div class="nutrient-slider-handle" style="left: 25%"></div>
+                </div>
+                <div class="range-labels">
+                    <div>低</div>
+                    <div>中</div>
+                    <div>高</div>
+                </div>
+            </div>
+            
+            <div class="nutrient-preference">
+                <div class="flex justify-between">
+                    <div>膳食纤维</div>
+                    <div>高</div>
+                </div>
+                <div class="nutrient-slider">
+                    <div class="nutrient-slider-track" style="width: 85%"></div>
+                    <div class="nutrient-slider-handle" style="left: 85%"></div>
+                </div>
+                <div class="range-labels">
+                    <div>低</div>
+                    <div>中</div>
+                    <div>高</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="button" style="margin-top: 12px; margin-bottom: 24px;" onclick="window.location.href='profile.html'">保存偏好设置</button>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        // 处理饮食习惯选择
+        const preferenceChips = document.querySelectorAll('.preference-chip');
+        preferenceChips.forEach(chip => {
+            chip.addEventListener('click', function() {
+                // 如果是"无特殊偏好"，取消选择其他选项
+                if (this.textContent === '无特殊偏好') {
+                    preferenceChips.forEach(c => {
+                        if (c.textContent !== '无特殊偏好') {
+                            c.classList.remove('selected');
+                        }
+                    });
+                    this.classList.add('selected');
+                } else {
+                    // 取消选择"无特殊偏好"
+                    preferenceChips.forEach(c => {
+                        if (c.textContent === '无特殊偏好') {
+                            c.classList.remove('selected');
+                        }
+                    });
+                    
+                    // 切换当前选项
+                    this.classList.toggle('selected');
+                }
+            });
+        });
+        
+        // 拖动滑块功能
+        const sliderHandles = document.querySelectorAll('.nutrient-slider-handle');
+        sliderHandles.forEach(handle => {
+            let isDragging = false;
+            
+            handle.addEventListener('mousedown', startDrag);
+            handle.addEventListener('touchstart', startDrag, { passive: false });
+            
+            function startDrag(e) {
+                e.preventDefault();
+                isDragging = true;
+                
+                const slider = handle.parentElement;
+                const sliderTrack = slider.querySelector('.nutrient-slider-track');
+                const levelText = handle.closest('.nutrient-preference').querySelector('.flex.justify-between div:last-child');
+                
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('touchmove', drag, { passive: false });
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchend', stopDrag);
+                
+                function drag(e) {
+                    if (!isDragging) return;
+                    
+                    const sliderRect = slider.getBoundingClientRect();
+                    let clientX;
+                    
+                    if (e.type === 'mousemove') {
+                        clientX = e.clientX;
+                    } else {
+                        clientX = e.touches[0].clientX;
+                    }
+                    
+                    let position = (clientX - sliderRect.left) / sliderRect.width;
+                    position = Math.max(0, Math.min(1, position));
+                    
+                    const percent = position * 100;
+                    handle.style.left = `${percent}%`;
+                    sliderTrack.style.width = `${percent}%`;
+                    
+                    // 更新文本
+                    if (percent <= 30) {
+                        levelText.textContent = '低';
+                    } else if (percent <= 40) {
+                        levelText.textContent = '中低';
+                    } else if (percent <= 60) {
+                        levelText.textContent = '中';
+                    } else if (percent <= 70) {
+                        levelText.textContent = '中高';
+                    } else {
+                        levelText.textContent = '高';
+                    }
+                }
+                
+                function stopDrag() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', drag);
+                    document.removeEventListener('touchmove', drag);
+                    document.removeEventListener('mouseup', stopDrag);
+                    document.removeEventListener('touchend', stopDrag);
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

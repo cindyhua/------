@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>食物营养扫描助手 - 选择模板</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .template-item {
+            position: relative;
+            aspect-ratio: 1/1.5;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--separator-color);
+        }
+        
+        .template-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .template-item::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .template-item.selected::after {
+            border-color: var(--text-primary);
+        }
+        
+        .template-check {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .template-item.selected .template-check {
+            opacity: 1;
+        }
+        
+        .template-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--separator-color);
+        }
+        
+        .category-tab {
+            padding: 8px 16px;
+            margin-right: 8px;
+            border-radius: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .category-tab.active {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 动态岛模拟 -->
+    <div class="dynamic-island"></div>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <button class="navbar-button" onclick="goBack()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="navbar-title">选择分享模板</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="safe-area-top container">
+        <!-- 分类选项卡 -->
+        <div class="category-tabs">
+            <div class="category-tab active">全部</div>
+            <div class="category-tab">简约</div>
+            <div class="category-tab">卡通</div>
+            <div class="category-tab">对比</div>
+            <div class="category-tab">专业</div>
+            <div class="category-tab">节日</div>
+        </div>
+        
+        <!-- 模板网格 -->
+        <div class="template-grid">
+            <!-- 模板1 -->
+            <div class="template-item selected" data-id="1">
+                <img src="https://placehold.co/300x450/333/FFF?text=Template+1" alt="简约营养模板">
+                <div class="template-title">简约营养</div>
+                <div class="template-check">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- 模板2 -->
+            <div class="template-item" data-id="2">
+                <img src="https://placehold.co/300x450/333/FFF?text=Template+2" alt="健康对比模板">
+                <div class="template-title">健康对比</div>
+                <div class="template-check">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- 模板3 -->
+            <div class="template-item" data-id="3">
+                <img src="https://placehold.co/300x450/333/FFF?text=Template+3" alt="每日记录模板">
+                <div class="template-title">每日记录</div>
+                <div class="template-check">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- 模板4 -->
+            <div class="template-item" data-id="4">
+                <img src="https://placehold.co/300x450/333/FFF?text=Template+4" alt="营养分析模板">
+                <div class="template-title">营养分析</div>
+                <div class="template-check">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- 模板5 -->
+            <div class="template-item" data-id="5">
+                <img src="https://placehold.co/300x450/333/FFF?text=Template+5" alt="卡通风格模板">
+                <div class="template-title">卡通风格</div>
+                <div class="template-check">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- 模板6 -->
+            <div class="template-item" data-id="6">
+                <img src="https://placehold.co/300x450/333/FFF?text=Template+6" alt="专业报告模板">
+                <div class="template-title">专业报告</div>
+                <div class="template-check">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 自定义选项 -->
+        <div class="card">
+            <h3>自定义</h3>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="text-medium" style="margin-bottom: 8px;">添加个人评价</div>
+                <textarea style="width: 100%; height: 80px; border-radius: 12px; padding: 12px; background-color: var(--bg-tertiary); border: none; color: var(--text-primary); resize: none;" placeholder="填写您对这个食品的评价..."></textarea>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <div class="text-medium" style="margin-bottom: 8px;">强调营养素</div>
+                <div class="flex" style="flex-wrap: wrap; gap: 8px;">
+                    <div style="padding: 8px 12px; border-radius: 16px; background-color: var(--bg-tertiary); font-size: 14px;">热量</div>
+                    <div style="padding: 8px 12px; border-radius: 16px; background-color: var(--text-primary); color: var(--bg-primary); font-size: 14px;">蛋白质</div>
+                    <div style="padding: 8px 12px; border-radius: 16px; background-color: var(--bg-tertiary); font-size: 14px;">脂肪</div>
+                    <div style="padding: 8px 12px; border-radius: 16px; background-color: var(--text-primary); color: var(--bg-primary); font-size: 14px;">碳水化合物</div>
+                    <div style="padding: 8px 12px; border-radius: 16px; background-color: var(--bg-tertiary); font-size: 14px;">糖</div>
+                    <div style="padding: 8px 12px; border-radius: 16px; background-color: var(--bg-tertiary); font-size: 14px;">钠</div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="text-medium" style="margin-bottom: 8px;">显示品牌信息</div>
+                <label style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 40px; height: 20px; background-color: var(--text-primary); border-radius: 10px; position: relative;">
+                        <div style="width: 16px; height: 16px; background-color: var(--bg-primary); border-radius: 8px; position: absolute; right: 2px; top: 2px;"></div>
+                    </div>
+                    <span class="text-medium">显示</span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- 生成按钮 -->
+        <button class="button" style="margin-top: 24px; margin-bottom: 24px;" onclick="window.location.href='share-preview.html'">生成分享图片</button>
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script>
+        // 选择模板
+        const templateItems = document.querySelectorAll('.template-item');
+        templateItems.forEach(item => {
+            item.addEventListener('click', function() {
+                templateItems.forEach(t => t.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        
+        // 选择标签
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                categoryTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 这里可以添加根据选择的标签过滤模板的逻辑
+            });
+        });
+    </script>
+</body>
+</html> 
